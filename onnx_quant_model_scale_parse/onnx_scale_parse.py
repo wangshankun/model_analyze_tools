@@ -133,6 +133,7 @@ class ParseConvScale:
 
 def dump_data_to_histogram_jpg(data, title):
     data = np.array(data)
+    data = data.flatten()
     first_edge, last_edge = data.min(), data.max()
     n_equal_bins = 100 #分箱个数
     bin_edges = np.linspace(start=first_edge, stop=last_edge, num=n_equal_bins + 1, endpoint=True)
@@ -145,8 +146,10 @@ def dump_data_to_histogram_jpg(data, title):
     
 
 if __name__ == '__main__':
-    model_path = "./resnet34-ssd-whole-4bit-quant.onnx"
-    #model_path = "resnet18-ssd-4w4a-backbone_neck_roi_head.onnx"
+    #model_path = "./resnet34-ssd-whole-4bit-quant.onnx"
+    #model_path = "ssd-r34-w8a8-s-tensor-quant.onnx"
+    #model_path = "MEALV2_ResNet50_4w4a_s_pertensor.onnx"
+    model_path = "MEALV2_ResNet50_4w4a_s_perchannel.onnx"
     model = onnx.load(model_path)
     run = ParseConvScale()
     run.parse(model)
@@ -154,10 +157,11 @@ if __name__ == '__main__':
     #print(scale_dict)
     m_scale = []
     for it in scale_dict.values():
-        #print(it)
-        m_scale.append(it['m_scale'])
-
+        if len(list(it['m_scale'])) > 1:
+            m_scale.extend(list(it['m_scale'].flatten()))
+        else:
+            m_scale.append(it['m_scale'])
 
     #dump_data_to_histogram_jpg(weight_scale, "resnet34-ssd-whole-4bit-weight_scale-histogram")
     #dump_data_to_histogram_jpg(active_scale, "resnet34-ssd-whole-4bit-active_scale-histogram")
-    dump_data_to_histogram_jpg(m_scale, "resnet34-ssd-whole-4bit-m_scale-histogram")
+    dump_data_to_histogram_jpg(m_scale, "MEALV2_ResNet50_4w4a_s_perchannel-m_scale-histogram")
