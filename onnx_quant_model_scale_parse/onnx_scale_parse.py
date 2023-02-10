@@ -148,8 +148,8 @@ def dump_data_to_histogram_jpg(data, title):
 if __name__ == '__main__':
     #model_path = "./resnet34-ssd-whole-4bit-quant.onnx"
     #model_path = "ssd-r34-w8a8-s-tensor-quant.onnx"
-    #model_path = "MEALV2_ResNet50_4w4a_s_pertensor.onnx"
-    model_path = "MEALV2_ResNet50_4w4a_s_perchannel.onnx"
+    model_path = "MEALV2_ResNet50_4w4a_s_pertensor.onnx"
+    #model_path = "MEALV2_ResNet50_4w4a_s_perchannel.onnx"
     model = onnx.load(model_path)
     run = ParseConvScale()
     run.parse(model)
@@ -164,4 +164,5 @@ if __name__ == '__main__':
 
     #dump_data_to_histogram_jpg(weight_scale, "resnet34-ssd-whole-4bit-weight_scale-histogram")
     #dump_data_to_histogram_jpg(active_scale, "resnet34-ssd-whole-4bit-active_scale-histogram")
-    dump_data_to_histogram_jpg(m_scale, "MEALV2_ResNet50_4w4a_s_perchannel-m_scale-histogram")
+    #dump_data_to_histogram_jpg(m_scale, "MEALV2_ResNet50_4w4a_s_perchannel-m_scale-histogram")
+    dump_data_to_histogram_jpg(m_scale, "MEALV2_ResNet50_4w4a_s_pertensor-m_scale-histogram")
