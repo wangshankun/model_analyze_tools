@@ -41,11 +41,17 @@ assert np.allclose(Y, np.matmul(FA, FW))
 
 
 Y = np.zeros((4, 2), dtype=np.float32)
+#此循环可以用Y = np.matmul(A, W)代替
 for i in range(4):
     for j in range(2):
         for k in range(3):
             Y[i][j] += A[i][k]*W[k][j]
 
+#此循环可拆解几步:(并行处理效率更高)
+#1. W矩阵按列累加后变成一维矩阵 
+#2. 然后将这个一维矩阵扩展到(4,2)维度
+#3. 乘上一个 -z_a系数
+#4. 直接和Y矩阵相加
 for i in range(4):
     for j in range(2):
         for k in range(3):
@@ -67,7 +73,7 @@ for i in range(4):
 
 
 W_col_sum = torch.sum(torch.from_numpy(W), dim=0, keepdim = False)#列相加
-W_col_sum = W_col_sum.unsqueeze(0).expand(4, 2)
+W_col_sum = W_col_sum.unsqueeze(0).expand(4, 2)#扩展到与result相同的shape
 W_col_sum = W_col_sum.numpy()
 assert np.array_equal(W_exp, W_col_sum) #三层循环和torch.sum后unsqueeze一样效果
 Y = Y - z_a*W_col_sum
